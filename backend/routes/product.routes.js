@@ -38,7 +38,7 @@ productRouter.get('/:id', getProductById);
 //for admin
 // productRouter.post('/', userAuth, admin, createProduct);
 productRouter.post('/', userAuth, seller, upload.single('image'), createProduct);   //change admin -> adminAuth
-productRouter.put('/:id',userAuth, seller, updateProduct)    
+productRouter.put('/:id',userAuth, seller,upload.single('image'), updateProduct)    
 productRouter.delete('/:id',userAuth, seller, deleteProduct);
 
 

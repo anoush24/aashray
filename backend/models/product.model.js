@@ -13,8 +13,14 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     image: {
+      url:{
       type: String,
-      default: '/images/sample.jpg', 
+      default: 'https://via.placeholder.com/150', 
+      },
+      public_id: { 
+      type: String,
+      required: true,
+    }
     },
     description: {
       type: String,
