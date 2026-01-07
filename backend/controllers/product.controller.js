@@ -1,16 +1,26 @@
 const {Product} = require('../models/product.model.js');
+const cloudinary = require('cloudinary').v2;
 
 const createProduct = async (req, res) => {
   try {
     const { name, price, description, category, countInStock } = req.body;
 
-    const image = req.file ? `/${req.file.path}` : '/images/sample.jpg';
+    if (!req.file) {
+            return res.status(400).json({ message: 'Product image is required.' });
+        }
+
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "products" 
+        });
 
     const product = new Product({
       name,
       price,
       description,
-      image,
+      image: { 
+                url: result.secure_url,
+                public_id: result.public_id
+            },
       category,
       countInStock,
       user: req.user._id, 
@@ -54,17 +64,42 @@ const getProductById = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { name, price, description, image, category, countInStock } = req.body;
+    
     const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    const { name, price, description,category, countInStock } = req.body;
+
+        let imageUrl = product.image.url; 
+        let imagePublicId = product.image.public_id;
+
+
+        if (req.file) { 
+            if (product.image && product.image.public_id) {
+                await cloudinary.uploader.destroy(product.image.public_id);
+            }
+
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "products"
+            });
+            imageUrl = result.secure_url;
+            imagePublicId = result.public_id;
+        }
     
 
     if (product) {
       product.name = req.body.name || product.name;
       product.price = req.body.price || product.price;
-      product.image = req.body.image || product.image;
       product.description = req.body.description || product.description;
       product.category = req.body.category || product.category;
       product.countInStock = req.body.countInStock || product.countInStock;
+      product.image = {
+            url: imageUrl,
+            public_id: imagePublicId
+        };
       
       
       const updatedProduct = await product.save();
@@ -84,6 +119,10 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+
+    if (product.image && product.image.public_id) {
+            await cloudinary.uploader.destroy(product.image.public_id);
+        }
     if (product) {
       await product.deleteOne(); 
       res.json({ message: 'Product removed' });

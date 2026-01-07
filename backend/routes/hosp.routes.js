@@ -1,6 +1,6 @@
 const express = require("express");
 const { signUpNewHosp,login,addslot, deleteSlot,getHosp,getHospitalByID,deleteAcc,updateAcc } = require("../controllers/hosp.controller.js");
-// const { acceptReq,updateStatus } = require("../controllers/reqresc.controller.js")
+const { acceptReq,updateStatus } = require("../controllers/reqresc.controller.js")
 const { HospAuth } = require("../middlewares/hospAuth.js");
 
 
