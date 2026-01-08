@@ -23,13 +23,29 @@ const createProduct = async (req, res) => {
             },
       category,
       countInStock,
-      user: req.user._id, 
+      user: req.user._id,
     });
 
 const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
     console.error('Error creating product:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+const getMyProducts = async (req, res) => {
+  try {
+    // We find products where the 'user' field matches the ID of the logged-in seller
+    const products = await Product.find({ user: req.user._id });
+    
+    if (!products || products.length === 0) {
+      return res.status(200).json([]); // Return empty array if no products yet
+    }
+    
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error fetching seller products:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -137,6 +153,7 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
   createProduct,
+  getMyProducts,
   getAllProducts,
   getProductById,
   updateProduct, 

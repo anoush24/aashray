@@ -30,7 +30,21 @@ const MainLayout = () => {
     { name: 'My Patients', path: '/hospital/patients' },
   ];
 
-  const navLinks = user?.role === 'hospital' ? hospitalLinks : userLinks;
+  const sellerLinks = [
+  { name: 'Dashboard', path: '/user/dashboard' }, // Keep standard dashboard for overview
+  { name: 'Inventory', path: '/seller/inventory' },
+  { name: 'Add Product', path: '/seller/add-product' },
+  { name: 'Shop', path: '/user/shop' }, // Sellers might still want to see the public shop
+];
+
+  let navLinks;
+ if (user?.role === 'hospital') {
+  navLinks = hospitalLinks;
+} else if (user?.isSeller === true) { // Explicitly check the boolean from your schema
+  navLinks = sellerLinks;
+} else {
+  navLinks = userLinks;
+}
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-body)] text-[var(--color-text-main)] transition-colors duration-300">
@@ -39,10 +53,16 @@ const MainLayout = () => {
       <nav className="sticky top-0 z-50 h-20 bg-[var(--color-bg-card)] shadow-sm px-6 lg:px-12 flex items-center justify-between transition-colors duration-300">
         
         {/* Logo */}
-        <Link to={user?.role === 'hospital' ? '/hospital/dashboard' : '/dashboard'} className="flex items-center gap-2 text-[var(--color-primary)] font-extrabold text-2xl font-nunito">
-          <PawPrint size={32} weight="fill" />
-          Aashray
-        </Link>
+<Link 
+  to={
+    user?.role === 'hospital' ? '/hospital/dashboard' : 
+    user?.isSeller ? '/user/dashboard' : '/user/dashboard'
+  } 
+  className="flex items-center gap-2 text-[var(--color-primary)] font-extrabold text-2xl font-nunito"
+>
+  <PawPrint size={32} weight="fill" />
+  Aashray
+</Link>
 
         {/* Links (Hidden on mobile) */}
         <ul className="hidden md:flex gap-8 font-semibold text-[var(--color-text-muted)]">
