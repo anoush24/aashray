@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext'; // Import context for dynamic username
+import { useNavigate } from 'react-router-dom';
 import { 
   PlusCircle, 
   Calendar, 
   Siren, 
   FileText, 
   Settings,
-  Bone
+  Bone,
+  Loader
 } from 'lucide-react';
 import PetCard from '../components/PetCard';
 import ActivityItem from '../components/ActivityItem';
@@ -15,6 +17,9 @@ import ActionLink from '../components/ActionLink';
 const Dashboard = () => {
   const { user } = useAuth(); // Get logged-in user data
   const [activeTab, setActiveTab] = useState('Appointments');
+  const navigate = useNavigate()
+  const[pets,setPets] = useState([]);
+  const[loading,setLoading] = useState(true);
 
   return (
     <>
@@ -36,24 +41,36 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
         
-        {/* Pet Card 1 */}
-        <PetCard 
-          img="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=500&q=60" 
-          name="Bruno" 
-          breed="Golden Retriever"
-          stats={{ age: "3 Yrs", sex: "Male", weight: "24kg" }}
-        />
+        {loading && (
+           <div className="col-span-full flex justify-center py-10">
+              <Loader className="animate-spin text-indigo-500" />
+           </div>
+        )}
 
-        {/* Pet Card 2 */}
-        <PetCard 
-          img="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=500&q=60" 
-          name="Luna" 
-          breed="Siamese Cat"
-          stats={{ age: "1 Yr", sex: "Female", weight: "4kg" }}
-        />
+        {!loading && pets.length > 0 ? (
+          pets.map((pet) => (
+            <PetCard
+              key = {pet._id}
+              pet={{
+                _id:pet._id,
+                name:pet.name,
+                breed:pet.breed,
+                image:pet.file_url || "https://placedog.net/500",
+                gender:pet.gender,
+                age:`${pet.age} Yrs`,
+                location: "Home",
+                tags: [pet.species]
+              }}
+            />
+          ))
+        ): (
+          !loading && <p className="text-gray-400 col-span-full">No pets added yet</p>
+        )}
+
+
 
         {/* Add Pet Card */}
-        <div className="min-h-[250px] rounded-3xl border-2 border-dashed border-[var(--color-primary)] bg-[var(--color-primary)]/5 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--color-primary)]/10 transition group">
+        <div onClick={() => navigate('/user/add-pet')} className="min-h-[250px] rounded-3xl border-2 border-dashed border-[var(--color-primary)] bg-[var(--color-primary)]/5 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--color-primary)]/10 transition group">
           <PlusCircle size={48} className="text-[var(--color-primary)] mb-3 group-hover:scale-110 transition-transform" />
           <span className="font-bold text-[var(--color-primary)]">Add New Pet</span>
         </div>

@@ -12,7 +12,7 @@ const rescRoutes = require("./routes/resc.routes.js")
 // const adminRoutes = require("./routes/admin.routes.js");
 const orderRoutes = require("./routes/order.routes.js");
 const productRoutes = require("./routes/product.routes.js");
-
+const petRoutes = require("./routes/pet.routes.js")
 
 
 const app = express();
@@ -35,6 +35,7 @@ app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
 app.use("/product", productRoutes);
 app.use("/resc", rescRoutes);
+app.use("/pets",petRoutes);
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
