@@ -37,6 +37,7 @@ const Login = () => {
       }
 
       const userData = {
+        ...response.user,
         username: formData.username,
         role: role,
         accessToken: response.accessToken // Store momentarily for API calls

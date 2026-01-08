@@ -142,7 +142,8 @@ const login = async (req, res) =>{
         
         res.json({
             "message":"Login Successfull",
-            "accessToken":accessToken
+            "accessToken":accessToken,
+            "user": payload
         })
 
     }catch(err){
