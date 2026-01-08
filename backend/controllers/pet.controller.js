@@ -9,7 +9,7 @@ const addOwnPet = async(req,res) => {
             return res.status(404).json({message:"user not found"})
         }
 
-        const {name,species,breed,age,gender,weight,description} = req.body;
+        const {name,species,breed,age,gender,weight,description,medicalNotes,isVaccinated,isNeutered} = req.body;
         let file_name=""
         let file_url=""
 
@@ -52,6 +52,7 @@ const addOwnPet = async(req,res) => {
             description,
             vaccinations: [],
             medicalHistory: [],
+            
         });
 
         const savedPet = await newPet.save();

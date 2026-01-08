@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext'; // Import context for dynamic username
 import { useNavigate } from 'react-router-dom';
+import api from "../services/api"
 import { 
   PlusCircle, 
   Calendar, 
@@ -10,16 +11,47 @@ import {
   Bone,
   Loader
 } from 'lucide-react';
-import PetCard from '../components/PetCard';
+import MyPetCard from "../components/MyPetCard"
 import ActivityItem from '../components/ActivityItem';
 import ActionLink from '../components/ActionLink';
+import { useEffect } from 'react';
+import AddPetModal from "../components/AddPetModel"
 
 const Dashboard = () => {
   const { user } = useAuth(); // Get logged-in user data
   const [activeTab, setActiveTab] = useState('Appointments');
   const navigate = useNavigate()
+
   const[pets,setPets] = useState([]);
   const[loading,setLoading] = useState(true);
+
+  const [isModalOpen,setIsModalOpen] = useState(false)
+
+  useEffect(() =>{
+    const fetchMyPets = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const response = await api.get('/pets/my-pets', {
+          headers: {Authorization: `Bearer ${token}`}
+        })
+
+        if(response.data.success) {
+          setPets(response.data.pets)
+        }
+      }
+      catch(err) {
+        console.error("Failed to fetch pets",err)
+      } finally {
+        setLoading(false)
+      }
+    };
+    if(user) fetchMyPets();
+  }, [user])
+
+  
+  const handlePetAdded = (newPet) => {
+    setPets((prev) => [newPet,...prev])
+  }
 
   return (
     <>
@@ -49,7 +81,7 @@ const Dashboard = () => {
 
         {!loading && pets.length > 0 ? (
           pets.map((pet) => (
-            <PetCard
+            <MyPetCard
               key = {pet._id}
               pet={{
                 _id:pet._id,
@@ -70,7 +102,7 @@ const Dashboard = () => {
 
 
         {/* Add Pet Card */}
-        <div onClick={() => navigate('/user/add-pet')} className="min-h-[250px] rounded-3xl border-2 border-dashed border-[var(--color-primary)] bg-[var(--color-primary)]/5 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--color-primary)]/10 transition group">
+        <div onClick={() => setIsModalOpen(true)} className="min-h-[250px] rounded-3xl border-2 border-dashed border-[var(--color-primary)] bg-[var(--color-primary)]/5 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--color-primary)]/10 transition group">
           <PlusCircle size={48} className="text-[var(--color-primary)] mb-3 group-hover:scale-110 transition-transform" />
           <span className="font-bold text-[var(--color-primary)]">Add New Pet</span>
         </div>
@@ -156,6 +188,14 @@ const Dashboard = () => {
 
         </div>
       </div>
+
+      {isModalOpen && (
+        <AddPetModal 
+          isOpen={true}
+          onClose= {() => setIsModalOpen(false)}
+          onPetAdded={handlePetAdded}
+        />
+      )}
     </>
   );
 };
