@@ -10,6 +10,9 @@ import SellerInventory from './pages/SellerInventory';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
 import Shop from './pages/Shop';
+import ProductDetails from './pages/ProductDetails';
+import { CartProvider } from './context/CartContext';
+import Cart from './pages/Cart';
 
 // --- UPDATED IMPORTS (Pointing directly to pages folder) ---
 import AdoptPage from './pages/AdoptPage'; 
@@ -17,6 +20,7 @@ import AdoptPage from './pages/AdoptPage';
 
 function App() {
   return (
+    <CartProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -30,6 +34,8 @@ function App() {
           <Route path="/seller/inventory" element={<SellerInventory />} />
           <Route path="/seller/add-product" element={<AddProduct />} />
           <Route path="/seller/edit-product/:id" element={<EditProduct />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/user/cart" element={<Cart />} />
           <Route path="/hospital/dashboard" element={<Dashboard />} />
           <Route path="/user/adopt" element={<AdoptPage />} />
 
@@ -39,6 +45,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </CartProvider>
   );
 }
 
