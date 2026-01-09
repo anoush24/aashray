@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link, useLocation, useNavigate,Outlet } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { PawPrint, ShoppingCart, LogOut, User as UserIcon } from 'lucide-react';
 
 const MainLayout = () => {
+  const { cartCount } = useCart();
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,7 +32,21 @@ const MainLayout = () => {
     { name: 'My Patients', path: '/hospital/patients' },
   ];
 
-  const navLinks = user?.role === 'hospital' ? hospitalLinks : userLinks;
+  const sellerLinks = [
+  { name: 'Dashboard', path: '/user/dashboard' }, // Keep standard dashboard for overview
+  { name: 'Inventory', path: '/seller/inventory' },
+  { name: 'Add Product', path: '/seller/add-product' },
+  { name: 'Shop', path: '/user/shop' }, // Sellers might still want to see the public shop
+];
+
+  let navLinks;
+ if (user?.role === 'hospital') {
+  navLinks = hospitalLinks;
+} else if (user?.isSeller === true) { // Explicitly check the boolean from your schema
+  navLinks = sellerLinks;
+} else {
+  navLinks = userLinks;
+}
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-body)] text-[var(--color-text-main)] transition-colors duration-300">
@@ -39,10 +55,16 @@ const MainLayout = () => {
       <nav className="sticky top-0 z-50 h-20 bg-[var(--color-bg-card)] shadow-sm px-6 lg:px-12 flex items-center justify-between transition-colors duration-300">
         
         {/* Logo */}
-        <Link to={user?.role === 'hospital' ? '/hospital/dashboard' : '/dashboard'} className="flex items-center gap-2 text-[var(--color-primary)] font-extrabold text-2xl font-nunito">
-          <PawPrint size={32} weight="fill" />
-          Aashray
-        </Link>
+<Link 
+  to={
+    user?.role === 'hospital' ? '/hospital/dashboard' : 
+    user?.isSeller ? '/user/dashboard' : '/user/dashboard'
+  } 
+  className="flex items-center gap-2 text-[var(--color-primary)] font-extrabold text-2xl font-nunito"
+>
+  <PawPrint size={32} weight="fill" />
+  Aashray
+</Link>
 
         {/* Links (Hidden on mobile) */}
         <ul className="hidden md:flex gap-8 font-semibold text-[var(--color-text-muted)]">
@@ -65,15 +87,16 @@ const MainLayout = () => {
         {/* Right Actions */}
         <div className="flex items-center gap-6">
           
-          {/* Cart Icon (Only show for regular users) */}
           {user?.role === 'user' && (
-            <div className="relative cursor-pointer text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition">
-              <ShoppingCart size={24} />
-              <div className="absolute -top-1.5 -right-1.5 bg-[var(--color-accent)] text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
-                2
-              </div>
-            </div>
-          )}
+  <Link to="/user/cart" className="relative cursor-pointer text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition">
+    <ShoppingCart size={24} />
+    {cartCount > 0 && (
+      <div className="absolute -top-1.5 -right-1.5 bg-[var(--color-accent)] text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center animate-pulse">
+        {cartCount}
+      </div>
+    )}
+  </Link>
+)}
           
           {/* User Profile & Logout */}
           <div className="flex items-center gap-3 pl-4 border-l border-[var(--color-border)]">

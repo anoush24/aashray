@@ -37,6 +37,7 @@ const Login = () => {
       }
 
       const userData = {
+        ...response.user,
         username: formData.username,
         role: role,
         accessToken: response.accessToken // Store momentarily for API calls
@@ -115,7 +116,7 @@ const Login = () => {
                 value={formData.username}
                 onChange={handleChange}
                 className="w-full p-3 bg-[var(--color-bg-input)] border-2 border-[var(--color-border)] rounded-xl text-[var(--color-text-main)] text-sm outline-none focus:border-[var(--color-primary)] transition-colors duration-300" 
-                placeholder={role === 'user' ? "user123" : "hospital_id"}
+                placeholder={role === 'user' ? "username" : "hospital_name"}
                 required 
               />
             </div>

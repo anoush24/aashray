@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const { createProduct,getAllProducts,getProductById,updateProduct,deleteProduct } = require('../controllers/product.controller.js');
+const { createProduct,getAllProducts,getProductById,updateProduct,deleteProduct,getMyProducts } = require('../controllers/product.controller.js');
 const { userAuth } = require("../middlewares/userAuth.js")
 const { seller,adminAuth } = require("../middlewares/adminAuth.js")
 
@@ -31,6 +31,9 @@ const productRouter = express.Router();
 
 // for customers
 productRouter.get('/', getAllProducts);
+
+productRouter.get('/myproducts', userAuth, seller, getMyProducts);
+
 productRouter.get('/:id', getProductById);
 
 

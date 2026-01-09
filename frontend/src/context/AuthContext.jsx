@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -22,13 +22,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('petUser', JSON.stringify(userData));
     // Ideally, store accessToken in memory (state) or httpOnly cookie, 
     // but for now we won't manually store it since your backend uses cookies.
+    if (accessToken) {
+        localStorage.setItem('token', accessToken);
+    }
   };
 
   // Logout Function
   const logout = () => {
     setUser(null);
     localStorage.removeItem('petUser');
-    // You might want to call an API endpoint here to clear the backend cookie
+    localStorage.removeItem('petUser');
+    localStorage.removeItem('token')
   };
 
   return (
