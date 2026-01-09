@@ -10,7 +10,7 @@ const PetCard = ({ pet }) => {
 
   return (
     <div 
-      onClick={() => navigate(`/user/adopt/${pet._id}`)}
+      onClick={() => navigate(`/user/adopt/pet/${pet._id}`)}
       // Added 'w-full max-w-[300px] mx-auto' to reduce width and center it
       className="group w-full max-w-[335px] mx-auto bg-white rounded-[1.5rem] shadow-sm hover:shadow-2xl hover:shadow-indigo-100 transition-all duration-300 border border-slate-100 overflow-hidden cursor-pointer flex flex-col h-full relative"
     >
