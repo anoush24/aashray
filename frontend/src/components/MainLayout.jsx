@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate,Outlet } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { PawPrint, ShoppingCart, LogOut, User as UserIcon } from 'lucide-react';
+import { PawPrint, ShoppingCart, LogOut, User as UserIcon, Menu, X } from 'lucide-react';
 
 const MainLayout = () => {
   const { cartCount } = useCart();
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -48,12 +49,23 @@ const MainLayout = () => {
   navLinks = userLinks;
 }
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-[var(--color-bg-body)] text-[var(--color-text-main)] transition-colors duration-300">
       
       {/* --- Dynamic Navbar --- */}
-      <nav className="sticky top-0 z-50 h-20 bg-[var(--color-bg-card)] shadow-sm px-6 lg:px-12 flex items-center justify-between transition-colors duration-300">
-        
+      <nav className="sticky top-0 z-50 h-20 bg-white bg-[var(--color-bg-card)] border-b border-[var(--color-border)] shadow-sm px-6 lg:px-12 flex items-center justify-between transition-colors duration-300">
+        <div className="flex items-center gap-4">
+          <button 
+            className="md:hidden text-[var(--color-text-main)] hover:text-[var(--color-primary)] focus:outline-none p-1"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open Menu"
+          >
+            <Menu size={28} /> 
+          </button>
         {/* Logo */}
 <Link 
   to={
@@ -65,7 +77,7 @@ const MainLayout = () => {
   <PawPrint size={32} weight="fill" />
   Aashray
 </Link>
-
+        </div>
         {/* Links (Hidden on mobile) */}
         <ul className="hidden md:flex gap-8 font-semibold text-[var(--color-text-muted)]">
           {navLinks.map((link) => (
@@ -117,11 +129,59 @@ const MainLayout = () => {
               <LogOut size={20} />
             </button>
           </div>
-
         </div>
       </nav>
 
-      {/* --- Main Content Injection --- */}
+      <div className={`md:hidden fixed inset-0 z-50 flex ${isMobileMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
+         <div 
+            className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-hidden="true"
+         ></div>
+
+         <div className={`relative bg-[var(--color-bg-card)] w-4/5 max-w-xs h-full shadow-2xl flex flex-col pt-8 px-6 space-y-8 transform transition-transform duration-300 ease-in-out bg-white ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <button 
+               onClick={() => setIsMobileMenuOpen(false)}
+               className="absolute top-6 right-6 text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] p-1"
+               aria-label="Close Menu"
+            >
+               <X size={28} />
+            </button>
+            <div className="flex items-center gap-4 pb-6 border-b border-[var(--color-border)] mr-8">
+               <div className="w-14 h-14 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-2xl uppercase shadow-md">
+                  {user?.username?.substring(0, 2) || <UserIcon size={28} />}
+               </div>
+               <div className="overflow-hidden">
+                 <p className="font-extrabold text-xl capitalize text-[var(--color-text-main)] truncate">{user?.username}</p>
+                 <p className="text-sm font-semibold text-[var(--color-primary)] uppercase tracking-wider">{user?.role === 'user' && user?.isSeller ? 'Seller' : user?.role}</p>
+               </div>
+            </div>
+
+            <div className="flex flex-col gap-2 overflow-y-auto">
+               {navLinks.map((link) => (
+                 <Link 
+                   key={link.name}
+                   to={link.path} 
+                   className={`text-lg font-semibold px-4 py-3 rounded-xl transition flex items-center ${
+                     location.pathname === link.path 
+                       ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]' 
+                       : 'text-[var(--color-text-muted)] hover:bg-gray-50 hover:text-[var(--color-text-main)]'
+                   }`}
+                 >
+                   {link.name}
+                 </Link>
+               ))}
+            </div>
+
+            <button 
+               onClick={handleLogout}
+               className="flex items-center gap-3 text-red-500 font-bold text-lg mt-auto pb-10 px-4 hover:bg-red-50 py-3 rounded-xl transition"
+            >
+               <LogOut size={22} /> Logout
+            </button>
+         </div>
+      </div>
+
       <main className="w-full py-10 px-0">
         <Outlet />
       </main>

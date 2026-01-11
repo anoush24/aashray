@@ -64,10 +64,8 @@ export const useAddPetForm = (onSuccess,onClose) => {
                 data.append('image',imageFile)
             }
 
-            const token = localStorage.getItem('token');
             const response = await api.post('/pets/add-my-pet',data,{
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': undefined
                 }
             })

@@ -1,43 +1,58 @@
 @import "tailwindcss";
 
-/* --- GLOBAL THEME VARIABLES --- */
 :root {
-  /* LIGHT MODE */
-  --color-primary: #0D9488;       /* Teal 600 */
-  --color-primary-hover: #0f766e; /* Teal 700 */
-  --color-accent: #f97316;        /* Orange 500 (Coral) */
+  /* =========================================
+     1. RAW PALETTES
+     ========================================= */
   
-  --color-bg-body: #FAFAF9;       /* Stone 50 */
-  --color-bg-card: #ffffff;       /* White */
-  --color-bg-input: #ffffff;      /* White */
-  --color-bg-toggle: #f1f5f9;     /* Slate 100 */
+  /* --- HOSPITAL PALETTE --- */
+  --hospital-main:      #0D9488;  /* Teal 600 */
+  --hospital-hover:     #0f766e;  /* Teal 700 */
+  --hospital-light:     #f0fdfa;  /* Teal 50 */
+  --hospital-border:    #ccfbf1;  /* Teal 100 */
+  --hospital-bg:        #FAFAF9;  /* Stone 50 */
+  --hospital-text:      #1e293b;  /* Slate 800 */
+
+  /* --- USER PALETTE (Orange/Coral) --- */
+  --user-main:          #F17852;  /* Coral Orange */
+  --user-hover:         #d96645;  /* Darker Coral */
+  --user-light:         #FDECE7;  /* Light Orange (Table Headers) */
+  --user-border:        #ffedd5;  /* Orange 100 */
+  --user-bg:            #FFFBF7;  /* Cream White */
+  --user-text:          #4A4A4A;  /* Dark Grey */
+
+  /* =========================================
+     2. SEMANTIC MAPPING (Default: HOSPITAL)
+     ========================================= */
+  --color-primary:        var(--hospital-main);
+  --color-primary-hover:  var(--hospital-hover);
+  --color-primary-light:  var(--hospital-light);
+  --color-primary-border: var(--hospital-border);
   
-  --color-text-main: #1e293b;     /* Slate 800 */
-  --color-text-muted: #64748b;    /* Slate 500 */
-  
-  --color-border: #e2e8f0;        /* Slate 200 */
+  --color-bg-body:        var(--hospital-bg);
+  --color-text-main:      var(--hospital-text);
+  --color-text-muted:     #64748b;
+  --color-border:         #e2e8f0;
 }
 
-/* DARK MODE OVERRIDES */
-.dark-mode {
-  --color-primary: #14b8a6;       /* Teal 500 */
-  --color-primary-hover: #0d9488; /* Teal 600 */
-  --color-accent: #fb923c;        /* Orange 400 */
+/* =========================================
+   3. THEME OVERRIDES (Apply class="theme-user")
+   ========================================= */
+.theme-user {
+  --color-primary:        var(--user-main);
+  --color-primary-hover:  var(--user-hover);
+  --color-primary-light:  var(--user-light);
+  --color-primary-border: var(--user-border);
   
-  --color-bg-body: #0f172a;       /* Slate 900 */
-  --color-bg-card: #1e293b;       /* Slate 800 */
-  --color-bg-input: #1e293b;      /* Slate 800 */
-  --color-bg-toggle: #020617;     /* Slate 950 */
-  
-  --color-text-main: #f8fafc;     /* Slate 50 */
-  --color-text-muted: #94a3b8;    /* Slate 400 */
-  
-  --color-border: #334155;        /* Slate 700 */
+  --color-bg-body:        var(--user-bg);
+  --color-text-main:      var(--user-text);
+  --color-border:         var(--user-border);
 }
 
+/* GLOBAL RESETS */
 body {
   background-color: var(--color-bg-body);
   color: var(--color-text-main);
   font-family: 'Inter', sans-serif;
-  transition: background-color 0.3s, color 0.3s;
+  transition: all 0.3s ease;
 }

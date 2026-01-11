@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   // Check for existing login on page load
   useEffect(() => {
-    const storedUser = localStorage.getItem('petUser');
+    const storedUser = localStorage.getItem('userInfo');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -18,10 +18,7 @@ export const AuthProvider = ({ children }) => {
   // Login Function
   const login = (userData, accessToken) => {
     setUser(userData);
-    // Save minimal user info to localStorage for persistence
-    localStorage.setItem('petUser', JSON.stringify(userData));
-    // Ideally, store accessToken in memory (state) or httpOnly cookie, 
-    // but for now we won't manually store it since your backend uses cookies.
+    localStorage.setItem('userInfo', JSON.stringify(userData));
     if (accessToken) {
         localStorage.setItem('token', accessToken);
     }
@@ -30,8 +27,7 @@ export const AuthProvider = ({ children }) => {
   // Logout Function
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('petUser');
-    localStorage.removeItem('petUser');
+    localStorage.removeItem('userInfo');
     localStorage.removeItem('token')
   };
 
