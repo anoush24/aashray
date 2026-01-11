@@ -1,6 +1,7 @@
 import React from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
 import Login from './pages/Auth/Login';
 import Dashboard from './pages/Dashboard';
@@ -20,7 +21,11 @@ import PetDetailsPage from './pages/PetDetailsPage'
 // import PetDetailsPage from './pages/PetDetailsPage'; // Assuming you put this here too
 
 function App() {
+
+  const {user} = useAuth()
+  const themeClass = user?.role === 'user' ? 'theme-user':'';
   return (
+    <div className={`min-h-screen ${themeClass} bg-[var(--color-bg-body)] text-[var(--color-text-main)] transition-colors duration-300`}>
     <CartProvider>
     <BrowserRouter>
       <Routes>
@@ -47,6 +52,7 @@ function App() {
       </Routes>
     </BrowserRouter>
     </CartProvider>
+    </div>
   );
 }
 
