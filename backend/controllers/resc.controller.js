@@ -38,7 +38,7 @@ const genRequest = async (req, res) => {
                 coordinates: [userLng, userLat]
             },
             file_url: req.file.path,
-            file_name: req.file.filename
+            file_name: req.file.filename,
         })
         
         let newRescData = await newResc.save()  // ✅ Single try-catch handles this
@@ -59,7 +59,9 @@ const genRequest = async (req, res) => {
             })
             
             let newReqdata = await newReq.save()
-            savedRequests.push(newReqdata)
+            let responseObj = newReqdata.toObject(); 
+            responseObj.hospitalName = hosp.username;
+            savedRequests.push(responseObj)
             console.log('Request saved for hospital:', hosp._id)
         }
 
@@ -82,7 +84,7 @@ const sameAnimal = async(req,res)=>{
     let match = await locnDecoder(gmap)
     if(!match) return res.status(400).json({message: 'Invalid Location'})
 
-    let maxRadius = 10//metres
+    let maxRadius = 500//metres
     let userLng = parseFloat(match[2])
     let userLat = parseFloat(match[1])
     try{
@@ -120,36 +122,68 @@ const sameAnimal = async(req,res)=>{
 }
 }
 //----------------------------------------------------------------------------------------------------------
-
-const deleteReq = async(req,res)=>{
-    let id = req.user._id
-    let username = req.user.username
-    
-    try{
+// Get all requests made by the logged-in user
+const getHistory = async (req, res) => {
+    try {
+        // Find requests where 'requestedBy' matches the logged-in username
+        // Sort by requestTime descending (newest first)
+        const history = await RescMod.find({ requestedBy: req.user.username })
+                                     .sort({ requestTime: -1 });
         
-        let rescData = await RescMod.findById(id)
-        
-        if(!rescData) {
-            return res.status(404).send('Record not found')
-        }
-        
-        await cloudinary.uploader.destroy(rescData.file_name)
-        
-        
-        let rescdelete = await RescMod.findByIdAndDelete(id)
-        console.log(rescdelete)
-
-        let reqDelete = await ReqRescMod.deleteMany({
-            requestedBy: username,
-        })
-        console.log(reqDelete)
-
-        res.send('Deleted from both Cloudinary and Database')
-
-    }catch(err){
-        console.log(err)
-        res.status(500).send(err)
+        res.json({
+            message: "User rescue history",
+            data: history,
+            count: history.length
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: err.message });
     }
 }
 
-module.exports={genRequest,sameAnimal,deleteReq}
+// Don't forget to export it: module.exports = { ..., getHistory }
+//----------------------------------------------------------------------------------------------------------
+
+const deleteReq = async (req, res) => {
+    try {
+        // ✅ 1. Get the ID from the request body (sent from frontend)
+        const { id } = req.body; 
+
+        if (!id) {
+            return res.status(400).send('Request ID is required');
+        }
+
+        // ✅ 2. Find the specific rescue request by its unique _id
+        const rescData = await RescMod.findById(id);
+
+        if (!rescData) {
+            return res.status(404).send('Record not found');
+        }
+
+        // ✅ 3. Verify ownership (Optional but Recommended)
+        // Ensure the person deleting it is the one who created it
+        if (rescData.requestedBy !== req.user.username) {
+             return res.status(403).send('Unauthorized to delete this request');
+        }
+
+        // ✅ 4. Delete file from Cloudinary
+        if (rescData.file_name) {
+            await cloudinary.uploader.destroy(rescData.file_name);
+        }
+
+        // ✅ 5. Delete the specific record from Database
+        await RescMod.findByIdAndDelete(id);
+
+        // (Optional) If ReqRescMod is linked by ID, delete specific logs here.
+        // If not, be careful with 'deleteMany' as it might wipe user history.
+        // For now, we only delete the main Rescue Record.
+
+        res.send('Request deleted successfully');
+
+    } catch (err) {
+        console.error("Delete Error:", err);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+module.exports={genRequest,sameAnimal,deleteReq,getHistory}

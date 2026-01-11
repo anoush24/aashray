@@ -15,6 +15,7 @@ import ProductDetails from './pages/ProductDetails';
 import { CartProvider } from './context/CartContext';
 import Cart from './pages/Cart';
 import PetRescue  from './pages/PetRescue';
+import MyRescueRequests from './pages/MyRescueRequests';
 // --- UPDATED IMPORTS (Pointing directly to pages folder) ---
 import AdoptPage from './pages/AdoptPage'; 
 import PetDetailsPage from './pages/PetDetailsPage'
@@ -47,6 +48,7 @@ function App() {
           <Route path="/user/adopt" element={<AdoptPage />} />
           <Route path="/user/adopt/:id" element={<PetDetailsPage />} />
           <Route path="/user/rescue" element={<PetRescue />} />
+          <Route path="/user/my-requests" element={<MyRescueRequests />} />
 
           
           {/* --- ROUTES --- */}
