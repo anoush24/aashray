@@ -18,6 +18,8 @@ import Cart from './pages/Cart';
 import HospitalAppointments from './pages/Hospital/HospitalAppointments';
 import UserAppointments from './pages/UserAppointment';
 
+import PetRescue  from './pages/PetRescue';
+import MyRescueRequests from './pages/MyRescueRequests';
 // --- UPDATED IMPORTS (Pointing directly to pages folder) ---
 import AdoptPage from './pages/AdoptPage'; 
 import PetDetailsPage from './pages/PetDetailsPage'
@@ -51,6 +53,13 @@ function App() {
 
           <Route path="/hospital/dashboard" element={<Dashboard />} />
           <Route path="/hospital/appointments" element={<HospitalAppointments />} />
+          <Route path="/hospital/dashboard" element={<Dashboard />} />
+
+          <Route path="/user/adopt" element={<AdoptPage />} />
+          <Route path="/user/adopt/:id" element={<PetDetailsPage />} />
+          <Route path="/user/rescue" element={<PetRescue />} />
+          <Route path="/user/my-requests" element={<MyRescueRequests />} />
+
           
           {/* --- ROUTES --- */}
           {/* <Route path="/adopt/:id" element={<PetDetailsPage />} /> */}

@@ -1,5 +1,5 @@
 let express = require('express')
-let {genRequest, sameAnimal, deleteReq} = require('../controllers/resc.controller')
+let {genRequest, sameAnimal, deleteReq,getHistory} = require('../controllers/resc.controller')
 let rescRoutes = express.Router()
 let multer = require('multer')
 require('dotenv').config()
@@ -23,5 +23,7 @@ let recep = multer({storage})
 rescRoutes.post('/genRequest',recep.single('file'),userAuth,genRequest)
 rescRoutes.post('/initialReq',sameAnimal)
 rescRoutes.post('/deleteReq',userAuth , deleteReq)
+rescRoutes.get('/getReq',userAuth , getHistory)
+
 
 module.exports=rescRoutes

@@ -19,6 +19,7 @@ let rescSchema = mongoose.Schema({
     file_url:{
         type:String
     },
+    gmap: { type: String },
     acceptedBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'HospMod',

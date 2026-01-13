@@ -70,4 +70,34 @@ const getAllPets = async (req, res) => {
     }
 }
 
-module.exports = { getAllPets, wantToAdopt };
+// Function to fetch a single pet by ID
+const getPetDetails = async (req, res) => {
+  try {
+    const { id } = req.params; // We will capture this from the URL (e.g., /adopt/:id)
+
+    const pet = await PetModel.findById(id);
+
+    if (!pet) {
+      return res.status(404).json({
+        success: false,
+        message: "Pet not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      pet,
+    });
+  } catch (error) {
+    console.error("Error fetching pet details:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+};
+
+
+
+module.exports = { getPetDetails,getAllPets, wantToAdopt };
