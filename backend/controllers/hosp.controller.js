@@ -183,69 +183,6 @@ const updateAcc = (req,res)=>{
     })
     .catch((err)=>console.log(err))
 }
-//-----------------------add slot -------------------------
-
-const addslot = async (req, res) => {
-  try {
-    const { slotDateTime } = req.body;
-
-    if (!slotDateTime) {
-      return res.status(400).json({ message: "Slot date & time is required" });
-    }
-
-    const hospital = req.user;
-    if (!hospital) {
-      return res.status(404).json({ message: "Hospital not found" });
-    }
-
-    const slotExist = hospital.slots.some(
-      slot => slot.slotDateTime.toISOString() === new Date(slotDateTime).toISOString()
-    );
-    if (slotExist) {
-      return res.status(409).json({ message: "Slot already exists" });
-    }
-
-    hospital.slots.push({ slotDateTime: new Date(slotDateTime), isBooked: false });
-    await hospital.save();
-
-    res.status(200).json({ message: "Slot added", slot: hospital.slots[hospital.slots.length - 1] });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error adding slot", error: err.message });
-  }
-};
-
-//-------del slot --------------------------------------
-
-const deleteSlot = async (req, res) => {
-    try {
-        
-        const { slotId } = req.params;
-
-        
-        const hospital = req.user;
-
-        const slotIndex = hospital.slots.findIndex(slot => slot._id.toString() === slotId);
-
-        if (slotIndex === -1) {
-            return res.status(404).json({ message: "Slot not found in this hospital" });
-        }
-
-        if (hospital.slots[slotIndex].isBooked) {
-            return res.status(403).json({ message: "Cannot delete a slot that is already booked" });
-        }
-
-        // 4. Remove the slot and save
-        hospital.slots.splice(slotIndex, 1);
-        await hospital.save();
-
-        res.status(200).json({ message: "Slot deleted successfully" });
-
-    } catch (err) {
-        console.error("Error in deleteSlot:", err);
-        res.status(500).json({ message: "Error deleting slot", error: err.message });
-    }
-};
 
 //-----------searchHosp--------------------------------------------------------------
 
@@ -296,4 +233,4 @@ const getHospitalByID = async (req,res) => {
     }
 }
 
-module.exports={signUpNewHosp,login,deleteAcc,updateAcc,addslot,searchHosp,getHosp ,getHospitalByID,deleteSlot}
+module.exports={signUpNewHosp,login,deleteAcc,updateAcc,searchHosp,getHosp ,getHospitalByID}

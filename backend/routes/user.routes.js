@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { getCurrentUser,nearByHosp,signUpNewUser,bookSlot,login,deleteAcc,updateAcc,getUserProfile} = require("../controllers/user.controller.js");
+const { getCurrentUser,nearByHosp,signUpNewUser,bookSlot,login,deleteAcc,updateAcc,getUserProfile, getMyAppointments} = require("../controllers/user.controller.js");
 const {getAllPets,wantToAdopt} = require('../controllers/adopter.controller.js')
 const { userAuth } = require("../middlewares/userAuth.js");
 const {searchHosp} = require("../controllers/hosp.controller.js")
@@ -8,7 +8,8 @@ const {listPet,deletePet,getMyPets} = require('../controllers/petowner.controlle
 let multer = require('multer')
 
 let cloudinary = require('cloudinary').v2
-let {CloudinaryStorage} = require('multer-storage-cloudinary')
+let {CloudinaryStorage} = require('multer-storage-cloudinary');
+const { getWeekSlots } = require("../controllers/slot.controller.js");
 
 let storage = new CloudinaryStorage({
     cloudinary: cloudinary,
@@ -31,6 +32,9 @@ userRouter.patch('/userUpdateAcc',userAuth,updateAcc)
 userRouter.get('/profile', getUserProfile);
 userRouter.get('/getAllPets',getAllPets)
 userRouter.get('/getMyPets',userAuth,getMyPets)
+
+userRouter.get('/slots/week',userAuth,getWeekSlots)
+userRouter.get('/appointments',userAuth,getMyAppointments)
 
 userRouter.post('/wantToAdopt',userAuth,wantToAdopt)
 userRouter.post('/listPet',upp.single('file'),userAuth,listPet)

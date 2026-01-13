@@ -39,6 +39,12 @@ const hospSchema = new mongoose.Schema({
 
   services: [String],
 
+  consultationFee: {
+    type: Number,
+    required: true,
+    default: 300
+  },
+
   licenseNumber: {
   type: String,
   required: true,
@@ -70,19 +76,6 @@ const hospSchema = new mongoose.Schema({
     }
   },
 
-  slots: [
-    {
-      slotDateTime: { type: Date, required: true },
-      isBooked: { type: Boolean, default: false },
-      petDetails: {
-        petName: String,
-        species: String,
-        age: Number,
-        ownerName: String,
-        contact: String
-    }
-    }
-  ]
 }, {
   timestamps: true
 });

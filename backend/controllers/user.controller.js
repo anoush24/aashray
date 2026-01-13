@@ -6,6 +6,8 @@ require('dotenv').config()
 
 const {UserModel} = require('../models/user.model')
 const {HospMod} = require("../models/hospital.model.js")
+const {SlotModel} = require("../models/slot.model.js")
+const {AppointmentModel} = require("../models/appointment.model.js")
 
 let {locnDecoder} = require('../middlewares/locnDecoder.js')
 let {genAccessToken,genRefreshToken} = require('../middlewares/generateToken.js')
@@ -223,7 +225,7 @@ const nearByHosp = async (req, res) =>{
                     }
                 }
             }
-        }).limit(3)
+        }).limit(5)
         res.json({hospitals:topThree , userLocation: {lat: userLat,lng: userLng}})
         console.log(topThree)
 
@@ -234,59 +236,77 @@ const nearByHosp = async (req, res) =>{
 }
 //-----bookSlot---------------------------------------------------------------------------
 
-const bookSlot = async(req,res)=>{
+const bookSlot = async (req, res) => {
+    try {
+
+        const { slot_id, pet_id, reason } = req.body;
+        const user_id = req.user._id;
+
+        if (!slot_id || !pet_id) {
+            return res.status(400).json({ message: "Slot ID and Pet ID are required" });
+        }
+
+        const lockedSlot = await SlotModel.findOneAndUpdate(
+            { 
+                _id: slot_id, 
+                isBooked: false 
+            },
+            { 
+                $set: { isBooked: true } 
+            },
+            { new: true } 
+        );
+
+        if (!lockedSlot) {
+            return res.status(409).json({ message: "This slot is no longer available." });
+        }
+
+        const newAppointment = new AppointmentModel({
+            hospital_id: lockedSlot.hospital_id,
+            slot_id: lockedSlot._id,
+            pet_id: pet_id,
+            owner_id: user_id,
+            reason: reason || "General Checkup",
+            status: "Scheduled"
+        });
+
+        await newAppointment.save();
+
+        res.status(200).json({ 
+            success: true, 
+            message: "Booking confirmed", 
+            appointment: newAppointment 
+        });
+
+    } catch (err) {
+        console.error("Booking Error:", err);
+        res.status(500).json({ message: "Error processing booking" });
+    }
+};
+
+const getMyAppointments = async (req, res) => {
   try {
-    const {username,time,petName, species, age, ownerName, contact}=req.body;
-    const bookingUser = req.user;
-    if(!username || !time){
-      return res.status(400).json({message:"Slot time is required"});
-    }
+    const userId = req.user._id;
 
-    if(!petName || !species || !age || !ownerName ){
-      return res.status(400).json({message:"Pet details are required required"});
-    }
-
-    const hospital= await HospMod.findOne({username});
-    
-    if(!hospital) {
-      return res.status(400).json({message:"Hosp not found"})
-    }
-
-    const slotNo = hospital.slots.findIndex(slot => slot.slotDateTime.toISOString() === new Date(time).toISOString())
-
-    if(slotNo === -1){
-      return res.status(404).json({message:"slot not found"})
-    }
-
-    if(hospital.slots[slotNo].isBooked) {
-      return res.status(409).json({message:"slot is already booked"})
-    }
-
-    hospital.slots[slotNo].isBooked = true;
-    hospital.slots[slotNo].petDetails = {
-      petName,
-      species,
-      age,
-      ownerName,
-      contact,
-      bookedBy: bookingUser._id
-    };
-    const updateHosp = await hospital.save();
-
-    res.status(200).json({message:"slot booked successfully",hospital:updateHosp})
-
+    const appointments = await AppointmentModel.find({ owner_id: userId })
+      .populate("hospital_id", "username address contactNumber")
+      .populate("pet_id", "name image")
+      .populate("slot_id", "startTime endTime");
+      
+    appointments.sort((a, b) => {
+        const dateA = new Date(a.slot_id.startTime);
+        const dateB = new Date(b.slot_id.startTime);
+        return dateA - dateB; 
+    });
+    res.json({ success: true, appointments });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching appointments" });
   }
-  catch(err)
-  {
-    console.log(err);
-    res.status(401).json({message:"Error booking slot",status:401})
+};
 
-
-    }
-}
 
 //----------------anoushkaController---------------------
 const getUserProfile = async (req, res) => {
   res.status(200).json(req.user);
 };
-module.exports={signUpNewUser,login,deleteAcc,updateAcc,getCurrentUser,nearByHosp,bookSlot,getUserProfile}
+module.exports={signUpNewUser,login,deleteAcc,updateAcc,getCurrentUser,nearByHosp,bookSlot,getUserProfile,getMyAppointments}

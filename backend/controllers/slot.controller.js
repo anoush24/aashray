@@ -199,10 +199,28 @@ const getWeekSlots = async (req, res) => {
             isBooked: false
         }).sort({ startTime: 1 });
 
+        const schedule = {};
+
+        slots.forEach(slot => {
+            const dateStr = slot.startTime.toISOString().split("T")[0]
+            const dateObj = new Date(dateStr)
+            const dayName = dateObj.toLocaleDateString("en-us",{weekday:"short"})
+
+            if (!schedule[dateStr]) {
+                schedule[dateStr] = {
+                    day: dayName,
+                    date: dateStr,
+                    slots: []
+                };
+            }
+            schedule[dateStr].slots.push(slot);
+        })
+
         res.status(200).json({
             success: true,
-            days: 7,
-            slots
+            hospitalId,
+            totalDays: 7,
+            schedule
         });
 
     } catch (err) {
