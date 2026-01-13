@@ -1,8 +1,6 @@
 const express = require("express");
 
 const { getCurrentUser,nearByHosp,signUpNewUser,bookSlot,login,deleteAcc,updateAcc,getUserProfile, getMyAppointments} = require("../controllers/user.controller.js");
-const {getAllPets,wantToAdopt} = require('../controllers/adopter.controller.js')
-const { getCurrentUser,nearByHosp,signUpNewUser,bookSlot,login,deleteAcc,updateAcc,getUserProfile} = require("../controllers/user.controller.js");
 const {getAllPets,wantToAdopt,getPetDetails} = require('../controllers/adopter.controller.js')
 const { userAuth } = require("../middlewares/userAuth.js");
 const {searchHosp} = require("../controllers/hosp.controller.js")
