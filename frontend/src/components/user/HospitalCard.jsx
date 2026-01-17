@@ -1,14 +1,17 @@
 import { Star, MapPin, Phone, ArrowRight } from "lucide-react";
+import haversineDistance from "../../utils/haversine.js"
 
-const HospitalCard = ({ hospital, onBook }) => {
-
+const HospitalCard = ({ hospital, onBook,userLocation }) => {
   const rating = hospital.consultationFee
-    ? (4 + Math.random() * 1).toFixed(1) // fake rating but looks real
+    ? (4 + Math.random() * 1).toFixed(1) //fake rating
     : "4.2";
 
   const specialties = Array.isArray(hospital.services)
     ? hospital.services
     : [];
+
+  const [hospitalLng, hospitalLat] = hospital.location.coordinates;
+  const distanceKm = haversineDistance(userLocation.lat,userLocation.lng,hospitalLat,hospitalLng)
 
   return (
     <div className="bg-white border border-[var(--color-border)] rounded-3xl shadow-md p-6 hover:border-[var(--color-primary)] hover:shadow-xl transition cursor-pointer">
@@ -30,7 +33,7 @@ const HospitalCard = ({ hospital, onBook }) => {
         <MapPin size={16} className="text-[var(--color-primary)]" />
         {hospital.address}
         <span className="mx-1">•</span>
-        {"1.2 km"} {/* Static for now */}
+        {distanceKm.toFixed(1)} km
       </div>
 
       {/* SPECIALTIES */}

@@ -261,11 +261,18 @@ const bookSlot = async (req, res) => {
             return res.status(409).json({ message: "This slot is no longer available." });
         }
 
+        const appointmentDate = new Date(
+            lockedSlot.startTime.getFullYear(),
+            lockedSlot.startTime.getMonth(),
+            lockedSlot.startTime.getDate()
+        )
+
         const newAppointment = new AppointmentModel({
             hospital_id: lockedSlot.hospital_id,
             slot_id: lockedSlot._id,
             pet_id: pet_id,
             owner_id: user_id,
+            appointmentDate,
             reason: reason || "General Checkup",
             status: "Scheduled"
         });

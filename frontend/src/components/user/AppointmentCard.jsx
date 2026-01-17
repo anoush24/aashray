@@ -3,7 +3,7 @@ import { Clock, Stethoscope, ChevronRight, Pill } from "lucide-react";
 
 const AppointmentCard = ({ appointment, onView }) => {
 
-  const slotStart = new Date(appointment.slot_id?.startTime || appointment.slotDateTime || Date.now());
+  const slotStart = new Date(appointment.slot_id?.startTime || appointment.slotDateTime );
   const day = slotStart.getDate();
   const month = slotStart.toLocaleString("default", { month: "short" }).toUpperCase();
   const time = slotStart.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });

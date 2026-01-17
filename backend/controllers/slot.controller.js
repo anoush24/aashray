@@ -7,7 +7,6 @@ const getHospitalSlots = async(req,res) => {
 
         const queryDate = date? new Date(date):new Date();
         const start = new Date(queryDate)
-        start.setHours(0,0,0,0)
         const end = new Date(queryDate)
         end.setHours(23,59,59,999) 
 
@@ -186,7 +185,6 @@ const getWeekSlots = async (req, res) => {
 
         // Start today
         const start = new Date();
-        start.setHours(0, 0, 0, 0);
 
         // Next 7 days
         const end = new Date();

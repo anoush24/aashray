@@ -13,6 +13,7 @@ const HospitalAppointments = () => {
   const [creationMode, setCreationMode] = useState('single'); 
   const [isLoading, setIsLoading] = useState(false);
   const [slots, setSlots] = useState([]);
+  const [upcomingList , setUpcomingList] = useState([])
 
   const fetchSlots = useCallback(async () => {
     try {
@@ -46,13 +47,10 @@ const HospitalAppointments = () => {
           image: pet.file_url || 'https://via.placeholder.com/150',
           reason: appt.reason || 'Checkup', 
           status: appt.status,
-          diagnosis: appt.diagnosis,
-          medicines: appt.medicines,
-          notes: appt.notes
         };
       });
 
-      setSlots(formattedAppointments);
+      setUpcomingList(formattedAppointments);
     }
     catch(error)
     {
@@ -61,7 +59,7 @@ const HospitalAppointments = () => {
     }
   }, []);
 
-  const handleCreate = async (e, formData) => {
+  const handleCreate = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setIsLoading(true);
 
@@ -98,12 +96,10 @@ const HospitalAppointments = () => {
   };
 
   useEffect(() => {
-    if (activeTab === 'upcoming') {
       fetchUpcomingList();
-    } else {
       fetchSlots();
-    }
-  }, [activeTab, fetchUpcomingList, fetchSlots]);
+  
+  }, [fetchUpcomingList, fetchSlots]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this slot?")) return;
@@ -145,10 +141,6 @@ const HospitalAppointments = () => {
     setShowPrescriptionForm(false);
   };
 
-  // --- HELPER VARS ---
-  const bookedSlots = slots.filter(s => s.isBooked);
-  const availableSlots = slots.filter(s => !s.isBooked);
-
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-12 py-10 relative">
 
@@ -160,11 +152,11 @@ const HospitalAppointments = () => {
         </div>
         <div className="flex gap-4">
           <div className="bg-white px-5 py-2 rounded-xl border border-[var(--color-border)] shadow-sm text-center">
-            <span className="block text-2xl font-bold text-[var(--color-primary)]">{bookedSlots.length}</span>
+            <span className="block text-2xl font-bold text-[var(--color-primary)]">{upcomingList.length}</span>
             <span className="text-xs text-[var(--color-text-muted)] uppercase font-bold">Upcoming</span>
           </div>
           <div className="bg-white px-5 py-2 rounded-xl border border-[var(--color-border)] shadow-sm text-center">
-            <span className="block text-2xl font-bold text-green-600">{availableSlots.length}</span>
+            <span className="block text-2xl font-bold text-green-600">{slots.length}</span>
             <span className="text-xs text-[var(--color-text-muted)] uppercase font-bold">Open Slots</span>
           </div>
         </div>
@@ -191,12 +183,12 @@ const HospitalAppointments = () => {
       {/* 3. TAB CONTENT */}
       {activeTab === 'upcoming' ? (
         <UpcomingList
-          slots={bookedSlots}
+          slots={upcomingList}
           onViewDetails={handleOpenModal}
         />
       ) : (
         <ManageSlots
-          slots={availableSlots}
+          slots={slots}
           creationMode={creationMode}
           setCreationMode={setCreationMode}
           onCreate={handleCreate}

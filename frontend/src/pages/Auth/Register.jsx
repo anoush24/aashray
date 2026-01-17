@@ -69,7 +69,7 @@ const Register = () => {
           <div className="absolute bottom-[5%] left-[10%] w-[100px] h-[100px] bg-white/5 rounded-full pointer-events-none"></div>
 
           <div className="flex items-center gap-3 mb-6 text-3xl font-extrabold relative z-10">
-            <span className="text-4xl">🐾</span> PetUnity
+            <span className="text-4xl">🐾</span> Aashray
           </div>
           <h1 className="text-xl md:text-2xl font-semibold leading-relaxed relative z-10 opacity-90 mb-4">
             Join the community.

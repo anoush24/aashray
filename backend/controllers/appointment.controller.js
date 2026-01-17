@@ -22,7 +22,7 @@ const getUpcomingAppointments = async (req, res) => {
         })
 
         .sort({ 'slot_id.startTime': 1 }); 
-        // appointments.sort((a, b) => new Date(a.slot_id.startTime) - new Date(b.slot_id.startTime));
+
 
         res.status(200).json(appointments);
     } catch (err) {

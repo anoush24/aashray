@@ -22,7 +22,10 @@ const appointmentSchema = new mongoose.Schema({
     ref: 'Pet',
     required: true
   },
-
+  appointmentDate: {
+    type: Date,
+    required: true
+  },
   status: {
     type: String,
     enum: ['Scheduled', 'Completed', 'Cancelled', 'NoShow'],

@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-
-// --- Fix for default Leaflet marker icons in React ---
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
@@ -16,7 +14,7 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Custom Icon for User Location (Blue Dot)
+
 const userIcon = new L.Icon({
   iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
@@ -26,7 +24,7 @@ const userIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-// Custom Icon for Hospitals (Red)
+
 const hospitalIcon = new L.Icon({
   iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
@@ -47,9 +45,8 @@ const RecenterMap = ({ center }) => {
   return null;
 };
 
-const MapSection = ({ hospitals, userLocation }) => {
-  // Default center (London) if no user location
-  const defaultCenter = [51.505, -0.09];
+const MapSection = ({ hospitals, userLocation, onHospitalSelect }) => {
+  const defaultCenter = [19.0760, 72.8777];
   const center = userLocation ? [userLocation.lat, userLocation.lng] : defaultCenter;
 
   return (
@@ -74,18 +71,20 @@ const MapSection = ({ hospitals, userLocation }) => {
           </Marker>
         )}
 
-        {/* Hospital Markers */}
+
         {hospitals.map((hospital) => {
-          // CHECK: Ensure your hospital object has lat/lng or coordinates
-          // Adjust 'hospital.lat' and 'hospital.lng' to match your API response structure
           const lat = hospital.lat || hospital.location?.coordinates[1] || hospital.latitude;
           const lng = hospital.lng || hospital.location?.coordinates[0] || hospital.longitude;
 
           if (lat && lng) {
             return (
-              <Marker key={hospital.id || hospital._id} position={[lat, lng]} icon={hospitalIcon}>
+              <Marker key={hospital.id || hospital._id} position={[lat, lng]} icon={hospitalIcon} eventHandlers={{
+                click: () => {
+                  onHospitalSelect?.(hospital._id)
+                }
+              }}>
                 <Popup>
-                  <div className="text-sm font-semibold">{hospital.name}</div>
+                  <div className="text-sm font-semibold">{hospital.username}</div>
                   <div className="text-xs text-gray-500">{hospital.address}</div>
                 </Popup>
               </Marker>

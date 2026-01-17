@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
-
+require("./cron.js")
 
 const blogRoutes = require("./routes/blog.routes.js");
 const userRouter = require("./routes/user.routes.js");

@@ -18,6 +18,7 @@ const UserAppointments = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState(null);
+  const [activeHospitalId, setActiveHospitalId] = useState(null);
 
   const [appointments, setAppointments] = useState([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
@@ -80,6 +81,15 @@ const UserAppointments = () => {
         },
         (error) => {
           console.error("Error getting location:", error);
+           setUserLocation({
+            lat: 19.0760,
+            lng: 72.8777,
+          });
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
         }
       );
     }
@@ -175,20 +185,31 @@ const UserAppointments = () => {
                 <MapSection 
                   hospitals={hospitals}
                   userLocation={userLocation}
+                  onHospitalSelect = {(hospitalId) => {
+                    setActiveHospitalId(hospitalId)
+                    const el = document.getElementById(`hospital-${hospitalId}`)
+                    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
                 />
               </div>
 
-              {/* RIGHT: SCROLLABLE HOSPITAL LIST (Uses Window Scroll) */}
+              {/* RIGHT: SCROLLABLE HOSPITAL LIST */}
               <div className="flex flex-col gap-6">
                 {hospitals.map((h) => (
-                  <HospitalCard
-                    key={h.id}
-                    hospital={h}
-                    onBook={() => {
-                      setSelectedHospital(h);
-                      setOpenModal(true);
-                    }}
-                  />
+                  <div
+                    key={h._id}
+                    id={`hospital-${h._id}`}
+                    className={`transition-all ${activeHospitalId === h._id? "ring-2 ring-orange-500 bg-blue-50 rounded-3xl": ""}`}
+                  >
+                    <HospitalCard
+                      hospital={h}
+                      userLocation={userLocation}
+                      onBook={() => {
+                        setSelectedHospital(h);
+                        setOpenModal(true);
+                      }}
+                    />
+                  </div>  
                 ))}
               </div>
             </div>
