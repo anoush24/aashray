@@ -8,8 +8,6 @@ const userRouter = require("./routes/user.routes.js");
 const hospRoutes = require("./routes/hosp.routes.js");
 
 const rescRoutes = require("./routes/resc.routes.js")
-// const adminRoutes = require("./routes/admin.routes.js");
-// const adminRoutes = require("./routes/admin.routes.js");
 const orderRoutes = require("./routes/order.routes.js");
 const productRoutes = require("./routes/product.routes.js");
 const petRoutes = require("./routes/pet.routes.js")
@@ -17,9 +15,9 @@ const petRoutes = require("./routes/pet.routes.js")
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend URL
-  credentials: true,               // Allows cookies to be sent
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: 'http://localhost:5173', 
+  credentials: true,               
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());

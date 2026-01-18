@@ -14,6 +14,9 @@ const BlogPage = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
 
+  const user = JSON.parse(localStorage.getItem("userInfo") || {})
+  const currentUserId = user._id
+
   useEffect(() => {
     const fetchBlog = async () => {
       try {
@@ -22,8 +25,12 @@ const BlogPage = () => {
         const fetchedBlog = response.data.blogData || response.data;
         
         setBlog(fetchedBlog);
-        setLikesCount(fetchedBlog.likesCount || 0); 
-        setIsLiked(fetchedBlog.liked || false); 
+        setLikesCount(fetchedBlog.likes ? fetchedBlog.likes.length : 0); 
+        
+        if(currentUserId && fetchedBlog.likes) {
+          const hasLiked = fetchedBlog.likes.includes(currentUserId);
+          setIsLiked(hasLiked)
+        }
 
       } catch (err) {
         console.error("Error fetching blog:", err);
@@ -34,7 +41,7 @@ const BlogPage = () => {
     };
 
     fetchBlog();
-  }, [id, navigate]);
+  }, [id, navigate,currentUserId]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -44,10 +51,26 @@ const BlogPage = () => {
     });
   };
 
-  const handleLike = () => {
-    const newLikedState = !isLiked;
-    setIsLiked(newLikedState);
-    setLikesCount(prev => newLikedState ? prev + 1 : prev - 1);
+  const handleLike = async() => {
+    if (!currentUserId) {
+        toast.error("Please login to like posts");
+        return;
+    }
+    const previousLiked = isLiked;
+    const previousCount = likesCount;
+
+    setIsLiked(!isLiked);
+    setLikesCount(prev => !isLiked ? prev + 1 : prev - 1);
+    
+    try {
+        await api.patch(`/blogs/${id}/toggleLike`);
+    } catch (error) {
+        console.error("Like failed", error);
+  
+        setIsLiked(previousLiked);
+        setLikesCount(previousCount);
+        toast.error("Failed to like post");
+    }
   };
 
   const handleShare = () => {

@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BlogCard = ({ 
+  _id,
   title, 
   description, 
   image, 
@@ -34,6 +36,13 @@ const BlogCard = ({
   };
   const displayImage = typeof image === 'string' ? image : image?.url;
 
+  const navigate = useNavigate()
+  const handleRead = (e) => {
+    e.stopPropagation()
+    if(_id) {
+      navigate(`/user/blogs/${_id}`)
+    }
+  }
   return (
     <div 
       ref={cardRef}
@@ -151,6 +160,7 @@ const BlogCard = ({
               color: 'var(--user-main)',
               transform: rotation.x !== 0 ? 'translateX(5px)' : 'none'
             }}
+            onClick={handleRead}
           >
             Read 
           </div>
