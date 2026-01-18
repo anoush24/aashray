@@ -19,14 +19,16 @@ const optionalAuth = async (req, res, next) => {
       (await HospMod.findById(decoded._id).select("-password"));
 
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      req.user = null
+      return next()
     }
 
     req.user = user;
     req.role = user.role || "unknown";
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Token invalid" });
+    req.user = null
+    next()
   }
 };
 

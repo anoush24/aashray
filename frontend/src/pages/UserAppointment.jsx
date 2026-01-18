@@ -9,6 +9,7 @@ import BookingModal from "../components/user/BookingModal";
 
 import { Search, Hospital } from "lucide-react";
 import AppointDetailsModal from "../components/user/AppointDetailsModal";
+import TornBackground from "../components/TornBackground";
 
 const UserAppointments = () => {
   const [activeTab, setActiveTab] = useState("appointments");
@@ -98,8 +99,8 @@ const UserAppointments = () => {
   return (
     <>
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12">
+        <TornBackground/>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between mb-12">
           <div>
             <h1 className="text-4xl font-extrabold font-nunito text-[var(--color-text-main)]">
               My Schedule
@@ -194,7 +195,7 @@ const UserAppointments = () => {
               </div>
 
               {/* RIGHT: SCROLLABLE HOSPITAL LIST */}
-              <div className="flex flex-col gap-6">
+              <div className="z-10 flex flex-col gap-6">
                 {hospitals.map((h) => (
                   <div
                     key={h._id}

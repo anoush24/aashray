@@ -5,6 +5,11 @@ const blogSchema = mongoose.Schema({
         type : String,
         required : true
     },
+    description: {
+        type:String,
+        required: true,
+        maxLength:300
+    },
     content: {
         type : String,
         required : true
@@ -15,7 +20,17 @@ const blogSchema = mongoose.Schema({
     },
     author: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'UserModel' 
+        ref: 'UserModel',
+        required: true
+    },
+    badge: {
+        type:String,
+        enum: ['New', 'Hot', 'Diet', 'Seasonal', 'Finance', 'Training', 'Health', 'Story'],
+        default: 'New'
+    },
+    readTime: {
+        type:Number,
+        default:3
     },
     likes: [
         {
@@ -27,10 +42,6 @@ const blogSchema = mongoose.Schema({
         url: { type: String, required: true },
         public_id: { type: String, required: true }
     },
-    isApproved: {
-        type: Boolean,
-        default: false,
-  },
 });
 
 const Blog = mongoose.model('Blog', blogSchema);

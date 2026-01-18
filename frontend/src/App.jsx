@@ -17,6 +17,9 @@ import { CartProvider } from './context/CartContext';
 import Cart from './pages/Cart';
 import HospitalAppointments from './pages/Hospital/HospitalAppointments';
 import UserAppointments from './pages/UserAppointment';
+import UserBlogs from './pages/UserBlogs';
+import CreateBlog from './pages/CreateBlog';
+import BlogPage from './pages/BlogPage';
 
 import PetRescue  from './pages/PetRescue';
 import MyRescueRequests from './pages/MyRescueRequests';
@@ -24,6 +27,7 @@ import MyRescueRequests from './pages/MyRescueRequests';
 import AdoptPage from './pages/AdoptPage'; 
 import PetDetailsPage from './pages/PetDetailsPage'
 // import PetDetailsPage from './pages/PetDetailsPage'; // Assuming you put this here too
+
 
 function App() {
 
@@ -59,6 +63,9 @@ function App() {
           <Route path="/user/adopt/:id" element={<PetDetailsPage />} />
           <Route path="/user/rescue" element={<PetRescue />} />
           <Route path="/user/my-requests" element={<MyRescueRequests />} />
+          <Route path="/user/blogs" element={<UserBlogs />} />
+          <Route path="/create-blog" element={<CreateBlog />} />
+          <Route path="/user/blogs/:id" element={<BlogPage />} />
 
           
           {/* --- ROUTES --- */}

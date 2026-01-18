@@ -182,7 +182,7 @@ const MainLayout = () => {
          </div>
       </div>
 
-      <main className="w-full py-10 px-0">
+      <main className="w-full py-0 px-0">
         <Outlet />
       </main>
     </div>
