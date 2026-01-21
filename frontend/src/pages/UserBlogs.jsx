@@ -23,7 +23,7 @@ const UserBlogs = () => {
         }
       } catch (err) {
         console.error(err);
-      }finally {
+      } finally {
         setLoading(false)
       }
     };
@@ -36,9 +36,9 @@ const UserBlogs = () => {
   );
 
   return (
-    <div className="relative w-full py-10 min-h-screen theme-user bg-[var(--color-bg-body)] text-[var(--color-text-main)]">
+    <div className="relative w-full py-10 min-h-screen bg-[var(--color-bg-body)] text-[var(--color-text-main)]">
       <TornBackground />
-      
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-8 pb-12">
 
         {/* --- Header --- */}
@@ -56,7 +56,7 @@ const UserBlogs = () => {
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="relative group w-full md:w-[320px]">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400 group-focus-within:text-[var(--user-main)] transition-colors" />
+                <Search className="h-5 w-5 text-gray-400 group-focus-within:text-[var(--color-primary)] transition-colors" />
               </div>
               <input
                 type="text"
@@ -65,11 +65,11 @@ const UserBlogs = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-transparent 
                 text-[var(--color-text-main)] placeholder-gray-400 focus:outline-none focus:ring-4 
-                focus:ring-[var(--user-light)] shadow-sm transition-all"
+                focus:ring-[var(--color-primary-light)] shadow-sm transition-all"
               />
             </div>
 
-            <button className="p-3 rounded-2xl bg-white text-gray-500 hover:text-[var(--user-main)] transition-all shadow-sm hover:shadow-md">
+            <button className="p-3 rounded-2xl bg-white text-gray-500 hover:text-[var(--color-primary)] transition-all shadow-sm hover:shadow-md">
               <Filter size={20} />
             </button>
           </div>
@@ -79,12 +79,14 @@ const UserBlogs = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-300">
             <div className="relative">
-              <div className="w-16 h-16 rounded-full border-4 border-[var(--user-light)] border-t-[var(--user-main)] animate-spin"></div>
+              <div className="w-16 h-16 rounded-full border-4 border-[var(--color-primary-light)] border-t-[var(--color-primary)] animate-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-[var(--user-main)]"></div>
+                <div className="w-2 h-2 rounded-full bg-[var(--color-primary)]"></div>
               </div>
             </div>
-            <p className="mt-4 font-bold text-[var(--user-main)] animate-pulse">Fetching stories...</p>
+            <p className="mt-4 font-bold text-[var(--color-primary)] animate-pulse">
+              Fetching stories...
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
@@ -100,7 +102,9 @@ const UserBlogs = () => {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-4 shadow-sm">
                   <Search className="text-gray-400 w-8 h-8" />
                 </div>
-                <h3 className="text-lg font-bold text-[var(--color-text-main)]">No articles found</h3>
+                <h3 className="text-lg font-bold text-[var(--color-text-main)]">
+                  No articles found
+                </h3>
                 <p className="text-[var(--color-text-muted)]">
                   Try adjusting your search terms.
                 </p>
@@ -113,8 +117,10 @@ const UserBlogs = () => {
       {user && user.isBlogger && (
         <button
           onClick={() => navigate('/create-blog')}
-          className="fixed bottom-8 right-8 z-50 flex items-center bg-[var(--user-main)] hover:bg-[var(--user-hover)] text-white 
-          rounded-full shadow-[0_15px_30px_-5px_var(--user-main)] p-4 hover:pr-6 hover:pl-4 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] 
+          className="fixed bottom-8 right-8 z-50 flex items-center 
+          bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white 
+          rounded-full shadow-[0_15px_30px_-5px_var(--color-primary)] 
+          p-4 hover:pr-6 hover:pl-4 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] 
           hover:scale-110 active:scale-95 group"
           aria-label="Create new blog"
         >

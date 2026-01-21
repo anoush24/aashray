@@ -12,7 +12,7 @@ const blogRouter = express.Router();
 
 blogRouter.get("/all",optionalAuth,getBlogs);
 blogRouter.get("/:id",optionalAuth,getBlogById)
-blogRouter.post("/create",userAuth,upload.single("image"),createBlog);
+blogRouter.post("/create",optionalAuth,upload.single("image"),createBlog);
 blogRouter.patch("/:id/toggleLike",optionalAuth,toggleLike)
 
 module.exports = blogRouter;

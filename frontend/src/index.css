@@ -12,6 +12,7 @@
   --hospital-border:    #ccfbf1;  /* Teal 100 */
   --hospital-bg:        #FAFAF9;  /* Stone 50 */
   --hospital-text:      #1e293b;  /* Slate 800 */
+  --hospital-cream-green: #ECFDFB;
 
   /* --- USER PALETTE (Orange/Coral) --- */
   --user-main:          #F17852;  /* Coral Orange */
@@ -29,6 +30,7 @@
   --color-primary-hover:  var(--hospital-hover);
   --color-primary-light:  var(--hospital-light);
   --color-primary-border: var(--hospital-border);
+  --color-cream-accent: var(--hospital-cream-green);
   
   --color-bg-body:        var(--hospital-bg);
   --color-text-main:      var(--hospital-text);
@@ -44,7 +46,7 @@
   --color-primary-hover:  var(--user-hover);
   --color-primary-light:  var(--user-light);
   --color-primary-border: var(--user-border);
-  
+  --color-cream-accent: var(--user-cream-orange);
   --color-bg-body:        var(--user-bg);
   --color-text-main:      var(--user-text);
   --color-border:         var(--user-border);

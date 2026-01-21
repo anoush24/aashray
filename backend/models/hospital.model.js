@@ -25,6 +25,10 @@ const hospSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  isBlogger: {
+    type: Boolean,
+    default: false 
+  },
   location: {
     type: {
       type: String,

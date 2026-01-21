@@ -76,13 +76,13 @@ const CreateBlog = () => {
   const previewAuthor = { username: user.username || 'You' };
 
   return (
-    <div className="w-full bg-[var(--color-bg-body)] theme-user">
+    <div className="w-full bg-[var(--color-bg-body)]">
       <div className="flex flex-col md:flex-row">
         <div className="w-full md:w-1/2">
           <div className="p-6 lg:p-12 max-w-2xl mx-auto w-full">
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 px-4 py-2 mb-10 rounded-full border border-gray-200 bg-white text-sm font-semibold text-[var(--color-text-main)] hover:border-[var(--user-main)] hover:text-[var(--user-main)] hover:shadow-sm transition-all group"
+              className="inline-flex items-center gap-2 px-4 py-2 mb-10 rounded-full border border-gray-200 bg-white text-sm font-semibold text-[var(--color-text-main)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:shadow-sm transition-all group"
             >
               <ArrowLeft
                 size={16}
@@ -111,7 +111,7 @@ const CreateBlog = () => {
                   onChange={handleChange}
                   placeholder="e.g., Budgeting for your first pet"
                   maxLength={80}
-                  className="w-full p-4 rounded-2xl bg-white border border-gray-200 focus:border-[var(--user-main)] focus:ring-4 focus:ring-[var(--user-light)] outline-none transition-all font-bold text-lg text-[var(--color-text-main)]"
+                  className="w-full p-4 rounded-2xl bg-white border border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary-light)] outline-none transition-all font-bold text-lg text-[var(--color-text-main)]"
                 />
               </div>
 
@@ -126,7 +126,7 @@ const CreateBlog = () => {
                   onChange={handleChange}
                   placeholder="A quick summary for the card view..."
                   maxLength={200}
-                  className="w-full p-4 h-28 rounded-2xl bg-white border border-gray-200 focus:border-[var(--user-main)] focus:ring-4 focus:ring-[var(--user-light)] outline-none transition-all resize-none text-[var(--color-text-main)]"
+                  className="w-full p-4 h-28 rounded-2xl bg-white border border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary-light)] outline-none transition-all resize-none text-[var(--color-text-main)]"
                 />
               </div>
 
@@ -137,7 +137,7 @@ const CreateBlog = () => {
                   value={formData.content}
                   onChange={handleChange}
                   placeholder="Write your full article here..."
-                  className="w-full p-4 h-64 rounded-2xl bg-white border border-gray-200 focus:border-[var(--user-main)] focus:ring-4 focus:ring-[var(--user-light)] outline-none transition-all resize-none text-[var(--color-text-main)]"
+                  className="w-full p-4 h-64 rounded-2xl bg-white border border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary-light)] outline-none transition-all resize-none text-[var(--color-text-main)]"
                 />
               </div>
 
@@ -153,7 +153,7 @@ const CreateBlog = () => {
                     max="60"
                     value={formData.readTime}
                     onChange={handleChange}
-                    className="w-full p-4 rounded-2xl bg-white border border-gray-200 focus:border-[var(--user-main)] focus:ring-4 focus:ring-[var(--user-light)] outline-none transition-all font-medium"
+                    className="w-full p-4 rounded-2xl bg-white border border-gray-200 focus:border-[var(--color-primary)] focus:ring-4 focus:ring-[var(--color-primary-light)] outline-none transition-all font-medium"
                   />
                 </div>
 
@@ -169,8 +169,8 @@ const CreateBlog = () => {
                         onClick={() => setFormData((p) => ({ ...p, badge }))}
                         className={`px-3 py-2 rounded-full text-sm font-bold border transition-all flex-1 ${
                           formData.badge === badge
-                            ? 'bg-[var(--user-main)] text-white border-[var(--user-main)] shadow-md'
-                            : 'bg-white text-gray-500 border-gray-200 hover:border-[var(--user-main)]'
+                            ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-md'
+                            : 'bg-white text-gray-500 border-gray-200 hover:border-[var(--color-primary)]'
                         }`}
                       >
                         {badge}
@@ -193,20 +193,20 @@ const CreateBlog = () => {
                   />
                   <div className={`w-full p-8 rounded-2xl border-2 border-dashed transition-all flex flex-col items-center justify-center gap-2 ${
                     imageFile
-                      ? 'border-[var(--user-main)] bg-[var(--user-light)]'
+                      ? 'border-[var(--color-primary)] bg-[var(--color-primary-light)]'
                       : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
                   }`}>
                     {imageFile ? (
                       <>
-                        <CheckCircle size={32} className="text-[var(--user-main)]" />
-                        <span className="font-bold text-[var(--user-main)] text-center break-all px-4">
+                        <CheckCircle size={32} className="text-[var(--color-primary)]" />
+                        <span className="font-bold text-[var(--color-primary)] text-center break-all px-4">
                           {imageFile.name}
                         </span>
                         <span className="text-xs text-gray-500">Click to change image</span>
                       </>
                     ) : (
                       <>
-                        <Upload size={32} className="text-gray-400 group-hover:text-[var(--user-main)] transition-colors" />
+                        <Upload size={32} className="text-gray-400 group-hover:text-[var(--color-primary)] transition-colors" />
                         <span className="font-medium text-gray-500">Click to upload cover image</span>
                       </>
                     )}
@@ -217,7 +217,7 @@ const CreateBlog = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-2xl bg-[var(--user-main)] text-white font-bold text-lg shadow-lg shadow-[var(--user-light)] hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full py-4 rounded-2xl bg-[var(--color-primary)] text-white font-bold text-lg shadow-lg shadow-[var(--color-primary-light)] hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="animate-pulse">Publishing...</span>
@@ -231,7 +231,7 @@ const CreateBlog = () => {
           </div>
         </div>
 
-        <div className="hidden md:flex w-1/2 bg-[var(--user-light)] sticky top-20 h-[calc(100vh-5rem)] items-center justify-center p-12 overflow-hidden">
+        <div className="hidden md:flex w-1/2 bg-[var(--color-primary-light)] sticky top-20 h-[calc(100vh-5rem)] items-center justify-center p-12 overflow-hidden">
           <div className="relative z-10 scale-110 pointer-events-none">
             <BlogCard
               title={formData.title || 'Post title appears here'}

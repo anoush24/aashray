@@ -30,7 +30,7 @@ const MainLayout = () => {
     { name: 'Dashboard', path: '/hospital/dashboard' },
     { name: 'Appointments', path: '/hospital/appointments' },
     { name: 'Rescue Requests', path: '/hospital/rescue-requests' },
-    { name: 'My Patients', path: '/hospital/patients' },
+    { name: 'Blog', path: '/hospital/blogs' },
   ];
 
   const sellerLinks = [

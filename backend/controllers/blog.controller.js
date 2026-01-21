@@ -25,6 +25,7 @@ const createBlog = async (req, res) => {
       badge: badge || 'New', 
       readTime: readTime || 3, 
       author: req.user._id,
+      authorModel:req.authorModel,
       image: {
         url: result.secure_url,
         public_id: result.public_id
@@ -47,7 +48,7 @@ const getBlogs = async (req, res) => {
     const blogs = await Blog.find()
       .populate("author", "username email image") 
       .sort({ createdAt: -1 }); 
-
+    console.log(blogs)
     const modifiedBlogs = blogs.map((blog) => {
       const blogLikes = (blog.likes || [])
         .filter((id) => id)
@@ -104,8 +105,8 @@ const toggleLike = async (req, res) => {
 const getBlogById = async (req,res) => {
   try {
     const blogId = req.params.id
-    const userId = req.user._id.toString()
-    console.log(blogId)
+    const userId = req.user?._id.toString()
+
     const blog = await Blog.findById(blogId).populate("author", "username email")
     if(!blog) {
       return res.status(404).json({message:"Blog not found"})
@@ -116,7 +117,7 @@ const getBlogById = async (req,res) => {
       liked: userId ? blogLikes.includes(userId) : false,
       likesCount: blogLikes.length,
     };
-    
+
     res.status(200).json({message:"success",blogData})
   }
   catch(err)

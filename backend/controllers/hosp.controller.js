@@ -109,6 +109,7 @@ const login = async (req, res) =>{
     let {username,password} = req.body
     try{
     let loginUser = await HospMod.findOne({username})
+    console.log("logged in user is",loginUser)
     if(!loginUser){
         return res.json({
             "message":"User Not Found"
@@ -135,8 +136,14 @@ const login = async (req, res) =>{
 
         
         res.json({
-            "message":"Login Successfull",
-            "accessToken": accessToken
+            message:"Login Successfull",
+            accessToken: accessToken,
+            user: {
+                _id: loginUser._id.toString(),  
+                username: loginUser.username,
+                role: "hospital",
+                isBlogger:loginUser.isBlogger
+            },   
         })
 
     }catch(err){

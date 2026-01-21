@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
@@ -32,9 +32,15 @@ import PetDetailsPage from './pages/PetDetailsPage'
 function App() {
 
   const {user} = useAuth()
-  const themeClass = user?.role === 'user' ? 'theme-user':'';
+  useEffect(()=>{
+    const root = document.documentElement;
+    root.classList.remove('theme-user');
+    if (user?.role === 'user') {
+      root.classList.add('theme-user');
+    }
+  },[user])
   return (
-    <div className={`min-h-screen ${themeClass} bg-[var(--color-bg-body)] text-[var(--color-text-main)] transition-colors duration-300`}>
+    <>
     <Toaster position="top-right" />
     <CartProvider>
     <BrowserRouter>
@@ -55,10 +61,11 @@ function App() {
           <Route path="/user/appointment" element={<UserAppointments />} />
 
 
-          <Route path="/hospital/dashboard" element={<Dashboard />} />
+          <Route path="/hospital/dashboard" element={<HospitalAppointments />} />
           <Route path="/hospital/appointments" element={<HospitalAppointments />} />
-          <Route path="/hospital/dashboard" element={<Dashboard />} />
 
+          <Route path="/hospital/blogs" element={<UserBlogs />} />
+          <Route path="/hospital/blogs/:id" element={<BlogPage />} />
           <Route path="/user/adopt" element={<AdoptPage />} />
           <Route path="/user/adopt/:id" element={<PetDetailsPage />} />
           <Route path="/user/rescue" element={<PetRescue />} />
@@ -74,7 +81,7 @@ function App() {
       </Routes>
     </BrowserRouter>
     </CartProvider>
-    </div>
+    </>
   );
 }
 

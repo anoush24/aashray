@@ -20,8 +20,13 @@ const blogSchema = mongoose.Schema({
     },
     author: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'UserModel',
-        required: true
+        required: true,
+        refPath: 'authorModel'
+    },
+    authorModel: {
+        type:String,
+        required:true,
+        enum:['UserModel','HospMod']
     },
     badge: {
         type:String,
