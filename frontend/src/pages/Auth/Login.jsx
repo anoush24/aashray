@@ -1,16 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
+import api from '../../services/api';
 
 const Login = () => {
   const [role, setRole] = useState('user'); // 'user' or 'hospital'
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { user, login } = useAuth();
+
+  const redirectUser = (userRole) => {
+    if (userRole === 'hospital') {
+      navigate('/hospital/dashboard', { replace: true });
+    } else {
+      navigate('/user/dashboard', { replace: true });
+    }
+  };
+
+  useEffect(() => {
+    const checkSession = async() => {
+      if(user) {
+        redirectUser(user.role)
+        return
+      }
+
+      const storedUser = localStorage.getItem('userInfo');
+      const storedToken = localStorage.getItem('token');
+      
+      if (storedUser && storedToken) {
+         const parsedUser = JSON.parse(storedUser);
+         login(parsedUser, storedToken);
+         redirectUser(parsedUser.role);
+         return;
+      }
+
+      try {
+        const response = await api.get('/refresh');
+        const { accessToken, user: backendUser } = response.data;
+
+        login(backendUser, accessToken);
+        redirectUser(backendUser.role);
+
+      } catch (err) {
+        setCheckingSession(false);
+      }
+    };
+
+    checkSession();
+    
+  },[user, navigate])
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -44,13 +87,7 @@ const Login = () => {
       };
 
       login(userData, response.accessToken);
-
-      if (role === 'hospital') {
-        navigate('/hospital/dashboard');
-      } else {
-        navigate('/user/dashboard');
-      }
-
+      redirectUser(role);
     } catch (err) {
       console.error("Login Error:", err);
       setError(err.message || "Server connection failed");
@@ -58,6 +95,14 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-body)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-primary)]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 transition-colors duration-300 bg-[var(--color-bg-body)]">

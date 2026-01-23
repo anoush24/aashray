@@ -64,9 +64,9 @@ let {genAccessToken,genRefreshToken} = require('../middlewares/generateToken.js'
 
     res.cookie('refreshToken',refreshToken,{
         httpOnly:false, 
-        secure:false, //only use in production lvl
-        maxAge: 7*24*60*60*1000, // expires in 7 days
-        sameSite:'lax' // same site access and top urls access
+        secure:false, //true in productn
+        maxAge: 7*24*60*60*1000,
+        sameSite:'lax' 
     })
     try{
 
@@ -112,36 +112,35 @@ let {genAccessToken,genRefreshToken} = require('../middlewares/generateToken.js'
 const login = async (req, res) =>{
     let {username,password} = req.body
     try{
-    let loginUser = await UserModel.findOne({username})
-    if(!loginUser){
-        return res.json({
-            "message":"User Not Found"
-        })
-    }
+        let loginUser = await UserModel.findOne({username})
+        if(!loginUser){
+            return res.json({
+                "message":"User Not Found"
+            })
+        }
 
-    let isValidPass = await bcrypt.compare(password,loginUser.password)
-    if(!isValidPass){
-        return res.json({"message":"Incorrect Password"})
-    }
+        let isValidPass = await bcrypt.compare(password,loginUser.password)
+        if(!isValidPass){
+            return res.json({"message":"Incorrect Password"})
+        }
 
-    let payload = {
-        _id: loginUser._id,
-        username:loginUser.username,
-        role:"user",
-        isBlogger:loginUser.isBlogger,
-        isSeller: loginUser.isSeller
-    }
+        let payload = {
+            _id: loginUser._id,
+            username:loginUser.username,
+            role:"user",
+            isBlogger:loginUser.isBlogger,
+            isSeller: loginUser.isSeller
+        }
         let accessToken = await genAccessToken(payload)
         let refreshToken = await genRefreshToken(payload)
 
         res.cookie('refreshToken',refreshToken,{
-            httpOnly:false, 
-            secure:false, //only use in production lvl
+            httpOnly:true, 
+            secure:false, //true in productn
             maxAge: 7*24*60*60*1000, // expires in 7 days
             sameSite:'lax' // same site access and top urls access
         })
-        
-        
+
         res.json({
             "message":"Login Successfull",
             "accessToken":accessToken,
@@ -149,13 +148,62 @@ const login = async (req, res) =>{
         })
 
     }catch(err){
-        console.log(err)
+        console.error(err)
         res.json({
             "message":"Error",
             "error":err
 
         })
     }
+}
+
+const handleRefresh = async(req,res) => {
+    const token = req.cookies.refreshToken;
+    
+    if(!token) {
+        return res.status(401).json({message:"refresh token missing"})
+    }
+
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.REFRESH_SECRET
+      )
+      let foundUser;
+
+      if(decoded.role === "hospital") {
+        foundUser = await HospMod.findById(decoded._id)
+      }
+      else if(decoded.role === "user") {
+        foundUser = await UserModel.findById(decoded._id)
+      }
+
+      if(!foundUser) return res.status(400).json({message:"User not found"})
+
+      const payload = {
+        _id:foundUser._id,
+        username:foundUser.username,
+        role:foundUser.role,
+        isBlogger:foundUser.isBlogger || false,
+        isSeller: foundUser.isSeller || false
+      }
+      const accessToken = genAccessToken(payload)
+      res.json({accessToken,user:payload})
+    }
+    catch(err) {
+        console.log("Refresh Error:", err.message)
+        return res.status(403).json({message:"invalid refresh token"})
+    }
+
+}
+
+const logout = (req,res) => {
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax'
+  })
+  return res.status(200).json({ message: "Logout successful" });
 }
 
 
@@ -316,4 +364,4 @@ const getMyAppointments = async (req, res) => {
 const getUserProfile = async (req, res) => {
   res.status(200).json(req.user);
 };
-module.exports={signUpNewUser,login,deleteAcc,updateAcc,getCurrentUser,nearByHosp,bookSlot,getUserProfile,getMyAppointments}
+module.exports={signUpNewUser,login,deleteAcc,updateAcc,getCurrentUser,nearByHosp,bookSlot,getUserProfile,getMyAppointments,handleRefresh,logout}

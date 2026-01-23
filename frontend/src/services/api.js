@@ -24,11 +24,40 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      console.error("Session expired. Logging out...")
-      localStorage.removeItem('token');
-      localStorage.removeItem('userInfo');
+  async (error) => {
+    const originalRequest = error.config;
+    if (originalRequest.url.includes('/refresh')) {
+        return Promise.reject(error);
+    }
+
+    if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
+      
+      originalRequest._retry = true
+
+      try {
+        const response = await axios.get(`${BASE_URL}/refresh`, {
+          withCredentials: true 
+        });
+
+        const { accessToken } = response.data
+
+        localStorage.setItem('token', accessToken)
+        api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`
+        
+        return api(originalRequest);
+
+      } catch (refreshError) {
+        console.log("Session expired completely.");
+        
+        localStorage.removeItem('token');
+        localStorage.removeItem('userInfo')
+
+        if (window.location.pathname !== '/') {
+            window.location.href = '/';
+        }
+        return Promise.reject(refreshError);
+      }
     }
     return Promise.reject(error);
   }

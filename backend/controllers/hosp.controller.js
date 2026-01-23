@@ -128,7 +128,7 @@ const login = async (req, res) =>{
         let refreshToken = await genRefreshToken(payload)
 
         res.cookie('refreshToken',refreshToken,{
-            httpOnly:false, 
+            httpOnly:true, 
             secure:false, //only use in production lvl
             maxAge: 7*24*60*60*1000, // expires in 7 days
             sameSite:'lax' // same site access and top urls access
@@ -147,7 +147,7 @@ const login = async (req, res) =>{
         })
 
     }catch(err){
-        console.log(err)
+        console.error(err)
         res.json({
             "message":"Error",
             "error":err

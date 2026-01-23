@@ -49,6 +49,10 @@ const MapSection = ({ hospitals, userLocation, onHospitalSelect }) => {
   const defaultCenter = [19.0760, 72.8777];
   const center = userLocation ? [userLocation.lat, userLocation.lng] : defaultCenter;
 
+  if(!userLocation) {
+    return <p>Loading map...</p>
+  }
+
   return (
     <div className="w-full h-[500px] rounded-3xl overflow-hidden border border-[var(--color-border)] shadow-lg relative z-0">
       <MapContainer 

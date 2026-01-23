@@ -11,7 +11,7 @@ const HospitalCard = ({ hospital, onBook,userLocation }) => {
     : [];
 
   const [hospitalLng, hospitalLat] = hospital.location.coordinates;
-  const distanceKm = haversineDistance(userLocation.lat,userLocation.lng,hospitalLat,hospitalLng)
+  const distanceKm = userLocation? haversineDistance(userLocation.lat,userLocation.lng,hospitalLat,hospitalLng):null
 
   return (
     <div className="bg-white border border-[var(--color-border)] rounded-3xl shadow-md p-6 hover:border-[var(--color-primary)] hover:shadow-xl transition cursor-pointer">
@@ -33,7 +33,7 @@ const HospitalCard = ({ hospital, onBook,userLocation }) => {
         <MapPin size={16} className="text-[var(--color-primary)]" />
         {hospital.address}
         <span className="mx-1">•</span>
-        {distanceKm.toFixed(1)} km
+        {distanceKm !== null ? `${distanceKm.toFixed(1)} km`:"Calculating distance..."} 
       </div>
 
       {/* SPECIALTIES */}
